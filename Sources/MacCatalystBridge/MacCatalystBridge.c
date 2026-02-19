@@ -7,10 +7,23 @@
 
 #include "MacCatalystBridge.h"
 
+#include <dlfcn.h>
+
+typedef pid_t (*xpc_connection_get_pid_fn)(xpc_connection_t);
+typedef OSStatus (*SecCodeCreateWithXPCMessage_fn)(xpc_object_t, SecCSFlags, SecCodeRef *);
+
 pid_t xpc_connection_get_pid_bridged(xpc_connection_t connection) {
-    return xpc_connection_get_pid_original(connection);
+    static xpc_connection_get_pid_fn fn = NULL;
+    if (!fn) {
+        fn = (xpc_connection_get_pid_fn)dlsym(RTLD_DEFAULT, "xpc_connection_get_pid");
+    }
+    return fn ? fn(connection) : -1;
 }
 
-OSStatus SecCodeCreateWithXPCMessage_bridged(xpc_object_t message, SecCSFlags flags, SecCodeRef * CF_RETURNS_RETAINED target) {
-    return SecCodeCreateWithXPCMessage_original(message, flags, target);
+OSStatus SecCodeCreateWithXPCMessage_bridged(xpc_object_t message, SecCSFlags flags, SecCodeRef *target) {
+    static SecCodeCreateWithXPCMessage_fn fn = NULL;
+    if (!fn) {
+        fn = (SecCodeCreateWithXPCMessage_fn)dlsym(RTLD_DEFAULT, "SecCodeCreateWithXPCMessage");
+    }
+    return fn ? fn(message, flags, target) : errSecUnimplemented;
 }
