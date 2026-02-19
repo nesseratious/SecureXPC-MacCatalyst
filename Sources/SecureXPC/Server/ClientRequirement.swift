@@ -64,7 +64,6 @@ extension XPCServer.ClientRequirement {
 
     /// The requesting client must have [Hardened Runtime](https://developer.apple.com/documentation/security/hardened_runtime)
     /// enabled.
-    @available(macOS 10.14.0, *)
     public static var hardenedRuntime: XPCServer.ClientRequirement {
         XPCServer.ClientRequirement(messageAcceptor: HardenedMessageAcceptor())
     }
@@ -171,7 +170,6 @@ fileprivate protocol MessageAcceptor {
     func isEqual(to acceptor: MessageAcceptor) -> Bool
 }
 
-@available(macOS 10.14.0, *)
 fileprivate struct HardenedMessageAcceptor: MessageAcceptor {
     func shouldAcceptMessage(connection: xpc_connection_t, message: xpc_object_t) -> Bool {
         guard let code = SecCodeCreateWithXPCConnection(connection, andMessage: message) else {

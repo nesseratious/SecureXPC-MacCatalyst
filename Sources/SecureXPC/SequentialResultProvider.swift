@@ -123,7 +123,6 @@ public class SequentialResultProvider<S: Encodable> {
     ///
     /// - Parameters:
     ///   -   result: The sequential result to respond with.
-    @available(macOS 10.15, *)
     public func respond(withResult result: SequentialResult<S, Error>) async throws {
         try await withUnsafeThrowingContinuation { continuation in
             self.respond(withResult: result) { continuation.resume(with: $0) }
@@ -149,7 +148,6 @@ public class SequentialResultProvider<S: Encodable> {
     ///
     /// - Parameters:
     ///   -   value: The value to be sent.
-    @available(macOS 10.15, *)
     public func success(value: S) async throws {
         try await withUnsafeThrowingContinuation { continuation in
             self.success(value: value) { continuation.resume(with: $0) }
@@ -181,7 +179,6 @@ public class SequentialResultProvider<S: Encodable> {
     ///
     /// - Parameters:
     ///   -   error: The error to be sent to the client and passed to the server's error handler.
-    @available(macOS 10.15, *)
     public func failure(error: Error) async throws {
         try await withUnsafeThrowingContinuation { continuation in
             self.failure(error: error) { continuation.resume(with: $0) }
@@ -205,7 +202,6 @@ public class SequentialResultProvider<S: Encodable> {
     ///
     /// This is equivalent to ``finished(onDelivery:)`` and providing a ``SequentialResultDeliveryHandler`` meaning that awaiting this
     /// function call will wait on the client to have handled the sequence finishing.
-    @available(macOS 10.15, *)
     public func finished() async throws {
         try await withUnsafeThrowingContinuation { continuation in
             self.finished() { continuation.resume(with: $0) }

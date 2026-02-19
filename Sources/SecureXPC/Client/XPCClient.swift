@@ -77,7 +77,7 @@ import Foundation
 /// Whether a sequence ever finishes is determined by the implementation registered with the server or if a client side error occurs during decoding.
 ///
 /// ### Sending Requests with Closures
-/// Closure-based versions of these functions also exist to provide support for macOS 10.14 and earlier:
+/// Closure-based versions of these functions are also available:
 /// ```swift
 /// let updateRoute = XPCRoute.named("config", "update")
 ///                           .withMessageType(Config.self)
@@ -217,7 +217,6 @@ public class XPCClient {
     ///
     /// - Parameters:
     ///   - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func send(
         to route: XPCRouteWithoutMessageWithoutReply
     ) async throws {
@@ -265,7 +264,6 @@ public class XPCClient {
     /// - Parameters:
     ///   - message: Message to be included in the request.
     ///   - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func sendMessage<M: Encodable>(
         _ message: M,
         to route: XPCRouteWithMessageWithoutReply<M>
@@ -298,7 +296,6 @@ public class XPCClient {
     ///
     /// - Parameters:
     ///    - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func send<R: Decodable>(
         to route: XPCRouteWithoutMessageWithReply<R>
     ) async throws -> R {
@@ -333,7 +330,6 @@ public class XPCClient {
     /// - Parameters:
     ///    - message: Message to be included in the request.
     ///    - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func sendMessage<M: Encodable, R: Decodable>(
         _ message: M,
         to route: XPCRouteWithMessageWithReply<M, R>
@@ -366,7 +362,6 @@ public class XPCClient {
     ///
     /// - Parameters:
     ///   - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func send<S: Decodable>(
         to route: XPCRouteWithoutMessageWithSequentialReply<S>
     ) -> AsyncThrowingStream<S, Error> {
@@ -401,7 +396,6 @@ public class XPCClient {
     /// - Parameters:
     ///   - message: Message to be included in the request.
     ///   - route: The server route which will handle this request.
-    @available(macOS 10.15.0, *)
     public func sendMessage<M: Encodable, S: Decodable>(
         _ message: M,
         to route: XPCRouteWithMessageWithSequentialReply<M, S>
@@ -474,7 +468,6 @@ public class XPCClient {
     }
     
     /// Resumes the continuation while unwrapping any underlying errors thrown by a server's handler.
-    @available(macOS 10.15, *)
     private func resumeContinuation<T>(_ contination: UnsafeContinuation<T, Error>,
                                        unwrappingResponse response: Result<T, XPCError>) {
         if case let .failure(error) = response,
@@ -526,7 +519,6 @@ public class XPCClient {
     }
     
     /// Populates the continuation while unwrapping any underlying errors thrown by a server's handler.
-    @available(macOS 10.15.0, *)
     private func populateAsyncThrowingStreamContinuation<S: Decodable>(
         _ continuation: AsyncThrowingStream<S, Error>.Continuation,
         result: SequentialResult<S, XPCError>
@@ -638,7 +630,6 @@ public class XPCClient {
     ///
     /// > Note: Accessing this property involves cross-process communication with the server and is therefore subject to all of the same error conditions as making
     /// a `send` or `sendMessage` call.
-    @available(macOS 10.15.0, *)
     public var serverIdentity: XPCClient.ServerIdentity {
         get async throws {
             try await withUnsafeThrowingContinuation { continuation in

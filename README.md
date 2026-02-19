@@ -2,9 +2,8 @@ Use pure Swift to easily and securely communicate with XPC services and Mach ser
 to use your own [`Codable`](https://developer.apple.com/documentation/swift/codable) conforming types to send requests
 to routes you define and receive responses. 
 
-SecureXPC uses [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) on macOS 10.15 and
-later allowing clients to make non-blocking asynchronous requests to servers. A closure-based API is also available
-providing compatibility back to OS X 10.10.
+SecureXPC uses [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) allowing clients
+to make non-blocking asynchronous requests to servers. A closure-based API is also available.
 
 This package can be used to communicate with any type of XPC service or Mach service, with customized support for:
 - [XPC services](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingXPCServices.html)
@@ -51,7 +50,7 @@ private func bedazzle(message: String) throws -> Bool {
 }
 ```
 
-On macOS 10.15 and later `async` functions and closures can also be registered as the handler for a route.
+`async` functions and closures can also be registered as the handler for a route.
 
 There are multiple types of servers which can be retrieved:
  - `XPCServer.forThisXPCService()`
@@ -73,7 +72,7 @@ let client = <# client retrieval here #>
 let reply = try await client.sendMessage("Get Schwifty", to: route)
 ```
 
-Closure-based variants are available for macOS 10.14 and earlier:
+Closure-based variants are also available:
 ```swift
 let client = <# client retrieval here #>
 client.sendMessage("Get Schwifty", to: route, withResponse: { result in

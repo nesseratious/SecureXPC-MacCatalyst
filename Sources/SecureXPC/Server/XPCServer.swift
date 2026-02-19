@@ -83,9 +83,7 @@ import Foundation
 /// }
 /// ```
 ///
-/// On macOS 10.15 and later async functions and closures can also be registered as the handler for a route. For command line tools, such as the helper tools
-/// installed with `SMJobBless`, async functions and closures are only supported on macOS 12 and later. This is an
-/// [Apple limitation](https://developer.apple.com/forums/thread/701969) unrelated to SecureXPC.
+/// Async functions and closures can also be registered as the handler for a route.
 ///
 /// ### Starting a Server
 /// Once all of the routes are registered, the server must be told to start processing requests. In most cases this should be done with:
@@ -198,7 +196,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has no message and can't receive a reply.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute(_ route: XPCRouteWithoutMessageWithoutReply,
                               handler: @escaping () async throws -> Void) {
         self.registerRoute(route.route, handler: ConstrainedXPCHandlerWithoutMessageWithoutReplyAsync(handler: handler))
@@ -223,7 +220,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has a message and can't receive a reply.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute<M: Decodable>(_ route: XPCRouteWithMessageWithoutReply<M>,
                                             handler: @escaping (M) async throws -> Void) {
         self.registerRoute(route.route, handler: ConstrainedXPCHandlerWithMessageWithoutReplyAsync(handler: handler))
@@ -248,7 +244,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has no message and expects a reply.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute<R: Decodable>(_ route: XPCRouteWithoutMessageWithReply<R>,
                                             handler: @escaping () async throws -> R) {
         self.registerRoute(route.route, handler: ConstrainedXPCHandlerWithoutMessageWithReplyAsync(handler: handler))
@@ -273,7 +268,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has a message and expects a reply.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute<M: Decodable, R: Encodable>(_ route: XPCRouteWithMessageWithReply<M, R>,
                                                           handler: @escaping (M) async throws -> R) {
         self.registerRoute(route.route, handler: ConstrainedXPCHandlerWithMessageWithReplyAsync(handler: handler))
@@ -301,7 +295,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has no message and can receive zero or more sequential replies.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute<S: Encodable>(
         _ route: XPCRouteWithoutMessageWithSequentialReply<S>,
         handler: @escaping (SequentialResultProvider<S>) async -> Void
@@ -332,7 +325,6 @@ public class XPCServer {
     /// - Parameters:
     ///   - route: A route that has a message and can receive zero or more sequential responses.
     ///   - handler: Will be called when the server receives an incoming request for this route if the request is accepted.
-    @available(macOS 10.15.0, *)
     public func registerRoute<M: Decodable, S: Encodable>(
         _ route: XPCRouteWithMessageWithSequentialReply<M, S>,
         handler: @escaping (M, SequentialResultProvider<S>) async -> Void
@@ -406,7 +398,7 @@ public class XPCServer {
                     }
                 }
             }
-        } else if #available(macOS 10.15.0, *), let handler = handler as? XPCHandlerAsync {
+        } else if let handler = handler as? XPCHandlerAsync {
             XPCServer.ClientIdentity.setForTask(connection: connection, message: message) {
                 // Creating a task allows it to begin running immediately, operating similar to a concurrent
                 // DispatchQueue. However, the difference is there's no built in support to enforce serial execution.
@@ -433,8 +425,7 @@ public class XPCServer {
             }
         } else {
             fatalError("""
-            Non-sync handler for route \(request.route.pathComponents) was found, but only sync routes should be \
-            registrable on this OS version.
+            Non-sync handler for route \(request.route.pathComponents) was found.
             Handler: \(handler)
             """)
         }
@@ -454,7 +445,6 @@ public class XPCServer {
     /// Sets a handler to asynchronously receive any errors encountered.
     ///
     /// This will replace any previously set error handler, including a synchronous one.
-    @available(macOS 10.15.0, *)
     public func setErrorHandler(_ handler: @escaping (XPCError) async -> Void) {
         self.errorHandler = .async(handler)
     }
@@ -782,7 +772,6 @@ fileprivate struct ConstrainedXPCHandlerWithMessageWithSequentialReplySync<M: De
 
 // MARK: async handler function wrappers
 
-@available(macOS 10.15.0, *)
 fileprivate protocol XPCHandlerAsync: XPCHandler {
     func handle(
         request: Request,
@@ -792,7 +781,6 @@ fileprivate protocol XPCHandlerAsync: XPCHandler {
     ) async throws
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithoutMessageWithoutReplyAsync: XPCHandlerAsync {
     var shouldCreateReply = true
     let handler: () async throws -> Void
@@ -808,7 +796,6 @@ fileprivate struct ConstrainedXPCHandlerWithoutMessageWithoutReplyAsync: XPCHand
     }
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithMessageWithoutReplyAsync<M: Decodable>: XPCHandlerAsync {
     var shouldCreateReply = true
     let handler: (M) async throws -> Void
@@ -825,7 +812,6 @@ fileprivate struct ConstrainedXPCHandlerWithMessageWithoutReplyAsync<M: Decodabl
     }
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithoutMessageWithReplyAsync<R: Encodable>: XPCHandlerAsync {
     var shouldCreateReply = true
     let handler: () async throws -> R
@@ -842,7 +828,6 @@ fileprivate struct ConstrainedXPCHandlerWithoutMessageWithReplyAsync<R: Encodabl
     }
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithMessageWithReplyAsync<M: Decodable, R: Encodable>: XPCHandlerAsync {
     var shouldCreateReply = true
     let handler: (M) async throws -> R
@@ -860,7 +845,6 @@ fileprivate struct ConstrainedXPCHandlerWithMessageWithReplyAsync<M: Decodable, 
     }
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithoutMessageWithSequentialReplyAsync<S: Encodable>: XPCHandlerAsync {
     var shouldCreateReply = false
     let handler: (SequentialResultProvider<S>) async -> Void
@@ -877,7 +861,6 @@ fileprivate struct ConstrainedXPCHandlerWithoutMessageWithSequentialReplyAsync<S
     }
 }
 
-@available(macOS 10.15.0, *)
 fileprivate struct ConstrainedXPCHandlerWithMessageWithSequentialReplyAsync<M: Decodable, S: Encodable>: XPCHandlerAsync {
     var shouldCreateReply = false
     let handler: (M, SequentialResultProvider<S>) async -> Void
@@ -910,12 +893,8 @@ enum ErrorHandler {
             case .sync(let handler):
                 handler(error)
             case .async(let handler):
-                if #available(macOS 10.15, *) {
-                    Task {
-                        await handler(error)
-                    }
-                } else {
-                    fatalError("async error handler was set on macOS prior to 10.15, this should not be possible")
+                Task {
+                    await handler(error)
                 }
         }
     }

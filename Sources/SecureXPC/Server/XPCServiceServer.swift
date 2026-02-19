@@ -122,10 +122,7 @@ internal class XPCServiceServer: XPCServer {
             // bundle requirement should always succeed because as part of creating an XPCServiceServer a check is
             // performed that this process is located within a Contents/XPCServices directory. Hardened runtime should
             // always be enforced if required.
-            self.clientRequirement = try! .sameParentBundle
-            if #available(macOS 10.14.0, *) {
-                self.clientRequirement = self.clientRequirement && .hardenedRuntime
-            }
+            self.clientRequirement = try! .sameParentBundle && .hardenedRuntime
             if let teamIDRequirement = try? XPCServer.ClientRequirement.sameTeamIdentifier {
                 self.clientRequirement = self.clientRequirement && teamIDRequirement
             }

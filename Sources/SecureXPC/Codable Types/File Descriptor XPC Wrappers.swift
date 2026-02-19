@@ -70,7 +70,6 @@ extension FileDescriptorCodable {
 ///
 /// This property wrapper shares an underlying representation with ``FileHandleForXPC`` and therefore may be used interchangeably between the server and
 /// client. However, to make use of such functionality requires routes with identical names and differing message and/or reply types.
-@available(macOS 11.0, *)
 @propertyWrapper public struct FileDescriptorForXPC {
     public var wrappedValue: FileDescriptor
     fileprivate let closeOnEncode: Bool
@@ -81,7 +80,6 @@ extension FileDescriptorCodable {
     }
 }
 
-@available(macOS 11.0, *)
 extension FileDescriptorForXPC: FileDescriptorCodable {
     init(descriptor: CInt, closeOnEncode: Bool) {
         self.wrappedValue = FileDescriptor(rawValue: descriptor)
@@ -130,10 +128,6 @@ extension FileHandleForXPC: FileDescriptorCodable {
     }
     
     func close() throws {
-        if #available(macOS 10.15, *) {
-            try wrappedValue.close()
-        } else {
-            wrappedValue.closeFile()
-        }
+        try wrappedValue.close()
     }
 }

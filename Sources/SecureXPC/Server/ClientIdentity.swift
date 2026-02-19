@@ -29,11 +29,9 @@ public extension XPCServer {
         
         // MARK: task local
         
-        @available(macOS 10.15.0, *)
         @TaskLocal
         private static var currentForTask: XPCServer.ClientIdentity?
         
-        @available(macOS 10.15.0, *)
         @discardableResult internal static func setForTask<Success, Failure>(
             connection: xpc_connection_t,
             message: xpc_object_t,
@@ -66,7 +64,7 @@ public extension XPCServer {
         private static var current: XPCServer.ClientIdentity {
             if let current = Thread.current.threadDictionary[contextKey] as? XPCServer.ClientIdentity {
                 return current
-            } else if #available(macOS 10.15.0, *), let current = currentForTask {
+            } else if let current = currentForTask {
                 return current
             } else {
                 fatalError("""

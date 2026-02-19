@@ -52,7 +52,6 @@ public struct HandlerError: Error {
     }
     
     /// Wrap calls to an ``XPCServer``'s `async` handlers in this.
-    @available(macOS 10.15.0, *)
     static func rethrow<T>(_ handler: () async throws -> T) async throws -> T {
         do {
             return try await handler()

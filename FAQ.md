@@ -71,12 +71,7 @@ While `Codable` can be implemented by any type, in practice value types such as 
 fit. The aforementioned deserialization behavior is by definition not applicable to value types.
 
 # What versions of macOS does SecureXPC support?
-OS X 10.10 Yosemite through macOS 13 Ventura are supported. Starting with macOS 10.15, Swift concurrency may be used and
-currently there is full parity between the closure-based APIs and the Swift concurrency ones.
-
-Note that on macOS 11 and earlier, Swift concurrency may not be used in Command Line Tools. While the code will compile,
-it will crash at runtime. This is due to an [Apple limitation](https://developer.apple.com/forums/thread/701969)
-unrelated to SecureXPC.
+macOS 12 and later are supported. Swift concurrency and closure-based APIs are both available with full parity.
 
 # My app and/or service is sandboxed, can I use SecureXPC?
 Absolutely. However, Apple places extensive restrictions on a sandboxed process's ability to establish XPC connections.
@@ -107,6 +102,4 @@ simpler to do so using Swift concurrency.
 I don't know. If you've succesfully published a Mac App Store app with SecureXPC, please start a GitHub discussion to
 let me know.
 
-SecureXPC makes use of the private API `xpc_connection_get_audit_token` on macOS 10.15 and earlier (a public equivalent
-exists starting with macOS 11). I can imagine this might result in the app being rejected. Otherwise only public APIs
-are used.
+SecureXPC uses only public APIs.

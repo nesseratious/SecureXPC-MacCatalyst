@@ -100,17 +100,7 @@ func SecStaticCodeCopySelf() throws -> SecStaticCode {
 func SecCodeCreateWithXPCConnection(_ connection: xpc_connection_t, andMessage message: xpc_object_t) -> SecCode? {
     // Get the code representing the client
     var code: SecCode?
-    if #available(macOS 11, *) { // publicly documented, but only available since macOS 11
-        SecCodeCreateWithXPCMessage(message, SecCSFlags(), &code)
-    } else { // private undocumented function: xpc_connection_get_audit_token, available on prior versions of macOS
-        let token = UndocumentedAuditToken.xpc_connection_get_audit_token(connection)
-        let tokenValues = [token.val.0, token.val.1, token.val.2, token.val.3,
-                           token.val.4, token.val.5, token.val.6, token.val.7]
-        let tokenData = Data(bytes: tokenValues, count: tokenValues.count * MemoryLayout<UInt32>.size)
-        let attributes = [kSecGuestAttributeAudit : tokenData] as CFDictionary
-        SecCodeCopyGuestWithAttributes(nil, attributes, SecCSFlags(), &code)
-    }
-    
+    SecCodeCreateWithXPCMessage(message, SecCSFlags(), &code)
     return code
 }
 
