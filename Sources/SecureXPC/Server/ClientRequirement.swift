@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MacCatalystBridge
 
 public extension XPCServer {
     /// Determines whether a client's request should be trusted by an ``XPCServer``.
@@ -216,7 +217,7 @@ fileprivate struct SameProcessMessageAcceptor: MessageAcceptor {
         // xpc_connection_get_pid(...) is not the process that created the connection, there's no way for it to fake
         // being this process. Therefore for connections received by an XPCAnonymousServer it's safe to directly compare
         // PIDs.
-        getpid() == xpc_connection_get_pid(connection)
+        getpid() == xpc_connection_get_pid_bridged(connection)
     }
     
     func isEqual(to acceptor: MessageAcceptor) -> Bool {

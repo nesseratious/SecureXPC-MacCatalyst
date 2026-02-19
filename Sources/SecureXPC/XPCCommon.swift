@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MacCatalystBridge
 
 /// A key into the XPC dictionary.
 ///
@@ -100,7 +101,7 @@ func SecStaticCodeCopySelf() throws -> SecStaticCode {
 func SecCodeCreateWithXPCConnection(_ connection: xpc_connection_t, andMessage message: xpc_object_t) -> SecCode? {
     // Get the code representing the client
     var code: SecCode?
-    SecCodeCreateWithXPCMessage(message, SecCSFlags(), &code)
+    SecCodeCreateWithXPCMessage_bridged(message, SecCSFlags(), &code)
     return code
 }
 

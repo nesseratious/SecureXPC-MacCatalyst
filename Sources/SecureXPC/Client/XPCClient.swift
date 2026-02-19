@@ -691,7 +691,7 @@ public class XPCClient {
             let serverIdentity = XPCClient.ServerIdentity(code: code,
                                                           effectiveUserID: xpc_connection_get_euid(connection),
                                                           effectiveGroupID: xpc_connection_get_egid(connection),
-                                                          processID: xpc_connection_get_pid(connection))
+                                                          processID: xpc_connection_get_pid_bridged(connection))
             handler(.success(serverIdentity))
         }
     }
