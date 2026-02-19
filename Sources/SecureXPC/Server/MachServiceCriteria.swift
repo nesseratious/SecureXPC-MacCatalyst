@@ -548,7 +548,7 @@ private func validateThisProcessIsAnSMAppServiceDaemon() -> ValidationResult {
         return .failure("""
         An SMAppService daemon must have a property list within its parent bundle's Contents/Library/LaunchDaemons /
         directory.
-        Parent bundle: \(try! parentAppURL())
+        Parent bundle: \((try? parentAppURL())?.absoluteString ?? "<no path>")
         """)
     }
     
