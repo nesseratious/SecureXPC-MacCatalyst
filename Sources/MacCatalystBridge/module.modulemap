@@ -1,0 +1,4 @@
+module MacCatalystBridge {
+    header "include/MacCatalystBridge.h"
+    export *
+}

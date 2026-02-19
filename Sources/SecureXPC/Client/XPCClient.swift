@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MacCatalystBridge
 
 /// An XPC client to make requests and receive responses from an ``XPCServer``.
 ///
